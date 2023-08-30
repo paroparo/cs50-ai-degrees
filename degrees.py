@@ -51,10 +51,6 @@ def load_data(directory):
             except KeyError:
                 pass
 
-    check_people = people
-    check_movies = movies
-    print("SOME THING")
-
 
 def main():
     if len(sys.argv) > 2:
@@ -95,22 +91,31 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
+    start = Node(state=source, parent=None, action=None)
+    frontier = QueueFrontier()
+    frontier.add(start)
 
-    print(source)
-    print("SOME THING")
-    # source = 102
-    # target = 420
-    # 102 stars in 104257 and 112384, add to QUEUE
-    # Look at stars in movies(104257, 112384): QUEUE is 104257, 112384
-    # while True:
-    #   if 104257 contains 420
-    #       Yes, return
-    #       No:
-    #           For each of the stars in 104257:
-    #               get Check people then add to QUEUE
+    explored = set()
+    while True:
+        node = frontier.remove()
 
-    start = Node(state=)
+        if node.state == target:
+            actions = []
+            states = []
+            while node.parent is not None:
+                actions.append(node.action)
+                states.append(node.state)
+                node = node.parent
+            actions.reverse()
+            states.reverse()
+            return list(zip(actions, states))
 
+        explored.add(node.state)
+
+        for action, state in neighbors_for_person(node.state):
+            if not frontier.contains_state(state) and state not in explored:
+                child = Node(state=state, parent=node, action=action)
+                frontier.add(child)
 
 
 def person_id_for_name(name):
